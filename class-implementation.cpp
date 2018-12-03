@@ -1,7 +1,7 @@
 #include <fstream>
 #include <iostream> // TODO delete after?
-#include <set> // TODO delete after?
 #include <iterator> // TODO delete after?
+#include <sstream>
 
 #include "class-header.hpp"
 
@@ -13,49 +13,65 @@ PlagiarismChecker::PlagiarismChecker() :
     input1Size(0),
     input2Size(0) {}
 
-/*TODO*/
-double PlagiarismChecker::Check(int argc, char* argv[]) {
+void PlagiarismChecker::Check(int argc, char* argv[]) {
 
     Parse(argc, argv);
     PlagiarismCheck();
     CalculateOutput();
+    PrintOutput();
 
-    return percentage; // placeholder
+}
+
+void PlagiarismChecker::ParseSynonym(char* synonymFile) {
+
+    std::ifstream syn;
+    std::string line;
+    std::string word;
+    syn.open(synonymFile);
+
+    while (getline(syn, line)) {
+        
+        std::istringstream iss(line);
+        std::string setToWord = "";
+        int i = 0;
+        while (iss >> word) {
+            if (i == 0) {
+                setToWord = word;
+            }
+            synonyms[word] = setToWord;
+            ++i;
+        }
+    }
+    syn.close();
+
 }
 
 void PlagiarismChecker::Parse(int argc, char* argv[]) {
 
-    // TODO: CHECK NO ARGS
     if (argc < 4) {
-        std::cout << "Invalid Input." << std::endl;
+        std::cout << "Invalid input. Please enter with the following format: ./main synonym input1 input2 n-tuple (n-tuple is optional)" << std::endl;
         exit(0);
     }
     
-    // Put synonyms into a hash set
-    std::ifstream syn;
-    std::string word;
-    syn.open(argv[1]);
-    
-    while (syn >> word) {
-        synonyms.insert(word);
-    }
-
-    syn.close();
+    // Put Synonym into hash map
+    ParseSynonym(argv[1]);
 
     // Put file1 and file2 into vector string
     ParseString(argv[2], input1);
     ParseString(argv[3], input2);
 
     getInputSize();
-
-    // Convert synonyms in input1 and input2 to the same synonym
-    ConvertSynonym();
-
+    
     // Assign N-tuple variable
     if (argc == 5) {
         nTuple = atoi(argv[4]);
     }
 
+    // Convert synonyms in input1 and input2 to the same synonym
+    ConvertSynonym();
+
+    // Parse string 2 to a Tuple set
+    toTupleSet(); 
 }
 
 void PlagiarismChecker::ParseString(char* input, std::vector<std::string>& str) {
@@ -74,24 +90,12 @@ void PlagiarismChecker::ParseString(char* input, std::vector<std::string>& str) 
 
 void PlagiarismChecker::ConvertSynonym() {
     
-    std::string word = "";
-    bool isSynonymFound = false;
-
-    for (int i = 0; i < input1Size; ++i) {
-        if (synonyms.find(input1[i]) != synonyms.end()) {
-            if (isSynonymFound == false) {
-                isSynonymFound = true;
-                word = input1[i];
-            }
-            else {
-                input1[i] = word;
-            }
+    for (int i = 0, j = 0; i < input1Size || j < input2Size; ++i, ++j) {
+        if (synonyms.find(input1[i]) != synonyms.end() && i < input1Size) {
+            input1[i] = synonyms.at(input1[i]);
         }
-    }
-
-    for (int i = 0; i < input2Size; ++i) {
-        if (synonyms.find(input2[i]) != synonyms.end()) {
-            input2[i] = word; 
+        if (synonyms.find(input2[i]) != synonyms.end() && i < input2Size) {
+            input2[i] = synonyms.at(input2[i]);
         }
     }
 
@@ -122,8 +126,6 @@ void PlagiarismChecker::PlagiarismCheck() {
     std::string str = "";
     int k = 0;
 
-    toTupleSet();
-
     for (int i = 0; i < input1Size; ++i) {
         str = "";
         str += input1[i];
@@ -151,4 +153,8 @@ void PlagiarismChecker::CalculateOutput() {
     int inputTupleSize = inputTuple.size();
     percentage = (plagiarized / inputTupleSize) * 100;
 
+}
+
+void PlagiarismChecker::PrintOutput() {
+    std::cout << percentage << "%" << std::endl;
 }

@@ -1,11 +1,12 @@
 #include <string>
 #include <vector>
 #include <set>
+#include <map>
 
 class PlagiarismChecker {
     public:
         PlagiarismChecker();
-        double Check(int argc, char* argv[]);
+        void Check(int argc, char* argv[]);
     private:
         void Parse(int argc, char* argv[]);
         void ParseString(char* input, std::vector<std::string>& str);
@@ -14,6 +15,8 @@ class PlagiarismChecker {
         void getInputSize();
         void PlagiarismCheck();
         void CalculateOutput();
+        void ParseSynonym(char* synonymFile);
+        void PrintOutput();
         double percentage;
         int plagiarized;
         int nTuple;
@@ -21,7 +24,7 @@ class PlagiarismChecker {
         int input2Size;
         std::vector<std::string> input1;
         std::vector<std::string> input2;
-        std::set<std::string> synonyms;
+        std::map<std::string, std::string> synonyms;
         std::set<std::string> inputTuple;
 
 };
