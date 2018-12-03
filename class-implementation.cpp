@@ -19,7 +19,7 @@ void PlagiarismChecker::Check(int argc, char* argv[]) {
 void PlagiarismChecker::Parse(int argc, char* argv[]) {
 
     if (argc < 4) {
-        std::cout << "Invalid input. Please enter with the following format: ./main synonym input1 input2 n-tuple (n-tuple is optional)" << std::endl;
+        std::cout << "Invalid input. Please enter with the following format: ./main synonym-file.txt file1.txt file2.txt n-tuple (n-tuple is optional)" << std::endl;
         exit(0);
     }
     
