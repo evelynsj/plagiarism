@@ -17,6 +17,7 @@ class PlagiarismChecker {
         void CalculateOutput();
         void ParseSynonym(char* synonymFile);
         void PrintOutput();
+        void toLowerCase();
         double percentage;
         int plagiarized;
         int nTuple;

@@ -2,6 +2,7 @@
 #include <iostream> // TODO delete after?
 #include <iterator> // TODO delete after?
 #include <sstream>
+#include <algorithm>
 
 #include "class-header.hpp"
 
@@ -70,8 +71,22 @@ void PlagiarismChecker::Parse(int argc, char* argv[]) {
     // Convert synonyms in input1 and input2 to the same synonym
     ConvertSynonym();
 
-    // Parse string 2 to a Tuple set
+    // Convert input1 and input2 to lower case
+    toLowerCase();
+
+    // Parse input2 to a Tuple set
     toTupleSet(); 
+}
+
+void PlagiarismChecker::toLowerCase() {
+    for (int i = 0, j = 0; i < input1Size || j < input2Size; ++i, ++j) {
+        if (i < input1Size) {
+            std::transform(input1[i].begin(), input1[i].end(), input1[i].begin(), ::tolower);
+        }
+        if (i < input2Size) {
+            std::transform(input1[i].begin(), input1[i].end(), input1[i].begin(), ::tolower);
+        }
+    }
 }
 
 void PlagiarismChecker::ParseString(char* input, std::vector<std::string>& str) {
