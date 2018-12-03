@@ -3,11 +3,9 @@
 
 int main(int argc, char* argv[]) {
     PlagiarismChecker obj1;
-    int output = 0;
+    double output = 0;
 
-    output = obj1.Check(argc, argv);
-
-    std::cout << output << "%" << std::endl;
+    obj1.Check(argc, argv);
 
     return 0;
 }
