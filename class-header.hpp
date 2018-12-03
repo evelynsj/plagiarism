@@ -2,6 +2,10 @@
 #include <vector>
 #include <set>
 #include <map>
+#include <fstream>
+#include <iostream>
+#include <sstream>
+#include <algorithm>
 
 class PlagiarismChecker {
     public:
@@ -9,15 +13,18 @@ class PlagiarismChecker {
         void Check(int argc, char* argv[]);
     private:
         void Parse(int argc, char* argv[]);
-        void ParseString(char* input, std::vector<std::string>& str);
-        void ConvertSynonym();
-        void toTupleSet();
-        void getInputSize();
         void PlagiarismCheck();
         void CalculateOutput();
-        void ParseSynonym(char* synonymFile);
         void PrintOutput();
+
+        void ParseString(char* input, std::vector<std::string>& str);
+        void ParseSynonym(char* synonymFile);
+        void ConvertSynonym();
+        void toTupleSet();
+        
+        void getInputSize();
         void toLowerCase();
+
         double percentage;
         int plagiarized;
         int nTuple;

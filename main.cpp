@@ -1,4 +1,3 @@
-#include <iostream>
 #include "class-header.hpp"
 
 int main(int argc, char* argv[]) {
