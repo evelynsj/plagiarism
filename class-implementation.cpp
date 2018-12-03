@@ -15,7 +15,6 @@ PlagiarismChecker::PlagiarismChecker() :
 int PlagiarismChecker::Check(int argc, char* argv[]) {
 
     Parse(argc, argv);
-    ConvertSynonym();
 
     return 0; // placeholder
 }
@@ -38,6 +37,9 @@ void PlagiarismChecker::Parse(int argc, char* argv[]) {
     // Put file1 and file2 into vector string
     ParseString(argv[2], input1);
     ParseString(argv[3], input2);
+
+    // Convert synonyms in input1 and input2 to the same synonym
+    ConvertSynonym();
 
     // Assign N-tuple variable
     if (argc == 5) {
