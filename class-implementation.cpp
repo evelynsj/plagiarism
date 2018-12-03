@@ -15,6 +15,7 @@ PlagiarismChecker::PlagiarismChecker() :
 int PlagiarismChecker::Check(int argc, char* argv[]) {
 
     Parse(argc, argv);
+    ConvertSynonym();
 
     return 0; // placeholder
 }
@@ -56,5 +57,30 @@ void PlagiarismChecker::ParseString(char* input, std::vector<std::string>& str) 
     }
 
     file.close();
+
+}
+
+void PlagiarismChecker::ConvertSynonym() {
+    
+    std::string word = "";
+    bool isSynonymFound = false;
+
+    for (int i = 0; i < input1.size(); ++i) {
+        if (synonyms.find(input1[i]) != synonyms.end()) {
+            if (isSynonymFound == false) {
+                isSynonymFound = true;
+                word = input1[i];
+            }
+            else {
+                input1[i] = word;
+            }
+        }
+    }
+
+    for (int i = 0; i < input2.size(); ++i) {
+        if (synonyms.find(input2[i]) != synonyms.end()) {
+            input2[i] = word; 
+        }
+    }
 
 }
