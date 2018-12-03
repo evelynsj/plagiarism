@@ -5,24 +5,31 @@
 
 #include "class-header.hpp"
 
-// set constructor
+// Constructor
 PlagiarismChecker::PlagiarismChecker() :
     percentage(0),
-    output(0),
-    nTuple(3) {}
+    plagiarized(0),
+    nTuple(3),
+    input1Size(0),
+    input2Size(0) {}
 
 /*TODO*/
-int PlagiarismChecker::Check(int argc, char* argv[]) {
+double PlagiarismChecker::Check(int argc, char* argv[]) {
 
     Parse(argc, argv);
     PlagiarismCheck();
+    CalculateOutput();
 
-    return 0; // placeholder
+    return percentage; // placeholder
 }
 
 void PlagiarismChecker::Parse(int argc, char* argv[]) {
 
     // TODO: CHECK NO ARGS
+    if (argc < 4) {
+        std::cout << "Invalid Input." << std::endl;
+        exit(0);
+    }
     
     // Put synonyms into a hash set
     std::ifstream syn;
@@ -94,43 +101,54 @@ void PlagiarismChecker::toTupleSet() {
     
     std::string str = "";
     int k = 0;
-    nTuple = 2;
 
     for (int i = 0; i < input2Size; ++i) {
         str = "";
         str += input2[i];
         k = i + 1;
         for (int j = 0; j < nTuple - 1 && k < input2Size; ++j, ++k) {
-            // std::cout << i << ' ';
-            // std::cout << j << ' ';
-            // std::cout << k << std::endl;
             str += ' ' + input2[k];
         }
-        // std::cout << str << std::endl;
-        // std::cout << input2Size << std::endl;
         inputTuple.insert(str);
         if (k == input2Size) {
             return;
         }
     }
 
-
-
 }
 
 void PlagiarismChecker::PlagiarismCheck() {
+
+    std::string str = "";
+    int k = 0;
+
     toTupleSet();
-    // std::set<std::string>::iterator it;
-    // int count = 0;
-    // for (it = inputTuple.begin(); it != inputTuple.end(); ++it) {
-    //     std::cout << *(it) << std::endl;
-    //     ++count;
-    // }
-    // std::cout << nTuple << std::endl;
-    // std::cout << count << std::endl;
+
+    for (int i = 0; i < input1Size; ++i) {
+        str = "";
+        str += input1[i];
+        k = i + 1;
+        for (int j = 0; j < nTuple - 1 && k < input1Size; ++j, ++k) {
+            str += ' ' + input1[k];
+        }
+        if (inputTuple.find(str) != inputTuple.end()) {
+            ++plagiarized;
+        }
+        if (k == input2Size) {
+            return;
+        }
+    }
+
 }
 
 void PlagiarismChecker::getInputSize() {
     input1Size = input1.size();
     input2Size = input2.size();
+}
+
+void PlagiarismChecker::CalculateOutput() {
+
+    int inputTupleSize = inputTuple.size();
+    percentage = (plagiarized / inputTupleSize) * 100;
+
 }
